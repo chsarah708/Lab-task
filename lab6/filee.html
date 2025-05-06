@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facial Profiling</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .upload-section {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Facial Profiling</h1>
+    <div class="upload-section">
+        <input type="file" id="imageUpload" accept="image/*">
+        <button onclick="uploadImage()">Analyze</button>
+    </div>
+    <p id="result"></p>
+
+    <script>
+        function uploadImage() {
+            let fileInput = document.getElementById('imageUpload');
+            if (fileInput.files.length === 0) {
+                alert("Please select an image first.");
+                return;
+            }
+            let formData = new FormData();
+            formData.append("image", fileInput.files[0]);
+            
+            axios.post("/detect", formData, { headers: { "Content-Type": "multipart/form-data" } })
+                .then(response => {
+                    document.getElementById("result").innerText = "Faces Detected: " + response.data.faces_detected;
+                })
+                .catch(error => {
+                    document.getElementById("result").innerText = "Error: " + error.response.data.error;
+                });
+        }
+    </script>
+</body>
+</html>
